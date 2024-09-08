@@ -7,5 +7,11 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@nuxt/icon',
+    ["nuxt-plotly", { inject: true }],
   ],
+  vite: {
+    optimizeDeps: {
+      include: ["plotly.js-dist-min"],
+    },
+  },
 })

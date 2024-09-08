@@ -11,4 +11,5 @@
   
 <template>
   <ColorModeDarkLight/>
+  <TestChart />
 </template>
