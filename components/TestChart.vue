@@ -2,7 +2,7 @@
   <div>
     <client-only>
       <nuxt-plotly
-        :data="data"
+        :data="test_chart.data"
         :layout="layout"
         :config="config"
         style="width: 100%"
@@ -15,14 +15,22 @@
 <script setup lang="ts">
   /// <reference types=".vue-global-types/vue_3.5_false.d.ts" />
   import type { NuxtPlotlyConfig, NuxtPlotlyData, NuxtPlotlyLayout, NuxtPlotlyHTMLElement } from 'nuxt-plotly';
+  import { reactive } from 'vue';
 
-  const x = [1, 2, 3, 4, 5];
-  const y = [10, 20, 30, 20, 10];
+  // Х - время:[`2013-11-04 22:33:00`]
+  // Y - значение:[12]
+  function randMinMax(min:number, max:number) {
+        return Math.random() * (max - min) + min;
+    }
+
+  const x = ref([1, 2, 3]);
+  const y = ref([1, 2, 3]);
+  var plot:any
   const data: NuxtPlotlyData = [
     { x: x, y: y, type: 'scatter', mode: 'lines', marker: { size: 20 } },
   ];
   const layout: NuxtPlotlyLayout = {
-    title: 'My graph on app.vue with <client-only>',
+    // title: 'My graph on app.vue with <client-only>',
     dragmode: 'pan',
     yaxis: {
       fixedrange: true
@@ -319,6 +327,10 @@
   var labels = ['coin']
   const config: NuxtPlotlyConfig = { scrollZoom: false, displayModeBar: false };
 
+  const test_chart = reactive({
+    data: [{ x: x, y: y, type: 'scatter', mode: 'lines', marker: { size: 20 } }]
+  })
+
   function myChartOnReady(plotlyHTMLElement: NuxtPlotlyHTMLElement) {
     const { $plotly } = useNuxtApp();
     console.log({ $plotly });
@@ -326,6 +338,16 @@
 
     plotlyHTMLElement.on?.('plotly_afterplot', function () {
       console.log('done plotting');
+    
+      function printSecondAlignedDate() {
+        setInterval(() => {
+                y.value.push(randMinMax(1, 3))
+                x.value.push(x.value[x.value.length-1]+1)
+                // console.log('printSecondAlignedDate',new Date().toISOString(), x, y);
+                // plotlyHTMLElement
+            }, 1000);
+        }     
+        printSecondAlignedDate();
     });
 
     plotlyHTMLElement.on?.('plotly_click', function () {
