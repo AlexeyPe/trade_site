@@ -31,6 +31,7 @@
   ];
   const layout: NuxtPlotlyLayout = {
     // title: 'My graph on app.vue with <client-only>',
+    uirevision:'true',
     dragmode: 'pan',
     yaxis: {
       fixedrange: true

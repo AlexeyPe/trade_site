@@ -11,5 +11,6 @@
   
 <template>
   <ColorModeDarkLight/>
-  <TestChart />
+  <!-- <TestChart /> -->
+  <PieChart />
 </template>
