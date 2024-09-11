@@ -1,8 +1,10 @@
 <template>
-  <Icon 
-    :name="isDark ? 'carbon:moon' : 'carbon:sun'"
-    @click="isDark = !isDark"
-    class="hover:cursor-pointer"/>
+  <ClientOnly>
+    <Icon 
+      :name="isDark ? 'carbon:moon' : 'carbon:sun'"
+      @click="isDark = !isDark"
+      class="hover:cursor-pointer"/>
+  </ClientOnly>
 </template>
 
 <script setup>
