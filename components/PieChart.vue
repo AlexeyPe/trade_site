@@ -1,15 +1,17 @@
 <template>
   <div>
-    <h1>Test Re-Draw</h1>
-    <button :onClick="changeData" style="width: 100%">Change Data</button>
-    <button :onClick="changeLayout" style="width: 100%">Change Layout</button>
-    <button :onClick="changeConfig" style="width: 100%">Change Config</button>
-    <nuxt-plotly
-      :data="pieChart.data"
-      :layout="pieChart.layout"
-      :config="pieChart.config"
-      style="width: 100%"
-    ></nuxt-plotly>
+    <client-only>
+      <h1>Test Re-Draw</h1>
+      <button :onClick="changeData" style="width: 100%">Change Data</button>
+      <button :onClick="changeLayout" style="width: 100%">Change Layout</button>
+      <button :onClick="changeConfig" style="width: 100%">Change Config</button>
+      <nuxt-plotly
+        :data="pieChart.data"
+        :layout="pieChart.layout"
+        :config="pieChart.config"
+        style="width: 100%"
+      ></nuxt-plotly>
+    </client-only>
   </div>
 </template>
 
