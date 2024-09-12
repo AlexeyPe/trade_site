@@ -5,5 +5,6 @@
 <template>
   <ColorModeDarkLight/>
   <!-- <TestChart /> -->
-  <PieChart />
+  <!-- <PieChart /> -->
+  <RealtimeLineChart />
 </template>

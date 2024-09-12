@@ -2,41 +2,41 @@
   <div>
     <client-only>
       <nuxt-plotly
-        :data="test_chart.data"
-        :layout="layout"
-        :config="config"
-        style="width: 100%"
-        @on-ready="myChartOnReady"
+      :data="сhart.data"
+      :layout="сhart.layout"
+      :config="сhart.config"
+      style="width: 100%"
+      @on-ready="chart_ready"
       ></nuxt-plotly>
     </client-only>
   </div>
 </template>
 
-<script setup lang="ts">
-  import type { NuxtPlotlyConfig, NuxtPlotlyData, NuxtPlotlyLayout, NuxtPlotlyHTMLElement } from 'nuxt-plotly';
-  import { reactive } from 'vue';
+<script lang="ts" setup>
+  import type { NuxtPlotlyHTMLElement } from 'nuxt-plotly';
+  const { $plotly } = useNuxtApp();
 
-  // Х - время:[`2013-11-04 22:33:00`]
-  // Y - значение:[12]
-  function randMinMax(min:number, max:number) {
-        return Math.random() * (max - min) + min;
-    }
-
-  const x = ref([1, 2, 3]);
-  const y = ref([1, 2, 3]);
-  var plot:any
-  const data: NuxtPlotlyData = [
-    { x: x, y: y, type: 'scatter', mode: 'lines', marker: { size: 20 } },
-  ];
-  const layout: NuxtPlotlyLayout = {
-    // title: 'My graph on app.vue with <client-only>',
-    uirevision:'true',
-    dragmode: 'pan',
-    yaxis: {
-      fixedrange: true
-    },
-    template: {
-      "layout": {
+  const сhart = {
+    data: [
+      {
+        y: [1],
+        type: 'line',
+      },
+    ],
+    config: {scrollZoom: false, displayModeBar: false},
+    layout: {
+      title: 'realtime line chart',
+      dragmode: 'pan',
+      yaxis: {
+        fixedrange: true,
+        autorange: true,
+      },
+      xaxis: {
+        autorange: true,
+        // range: [0, 10]
+      },
+      template: {
+        "layout": {
                 "geo": {
                     "bgcolor": "rgb(17,17,17)",
                     "showland": true,
@@ -320,46 +320,23 @@
                     "bgcolor": "#506784",
                     "borderwidth": 0
                 }
-            },
+              },
       // themeRef: "PLOTLY_DARK"
-    }
+      },
+
+    },
   };
-  var labels = ['coin']
-  const config: NuxtPlotlyConfig = { scrollZoom: false, displayModeBar: false };
 
-  const test_chart = reactive({
-    data: [{ x: x, y: y, type: 'scatter', mode: 'lines', marker: { size: 20 } }]
-  })
+  var is_ready:boolean = false
 
-  function myChartOnReady(plotlyHTMLElement: NuxtPlotlyHTMLElement) {
-    const { $plotly } = useNuxtApp();
-    console.log({ $plotly });
-    console.log({ plotlyHTMLElement });
+  function chart_ready(plotlyHTMLElement: NuxtPlotlyHTMLElement) {
+    if (is_ready) return
+    is_ready = true
 
-    plotlyHTMLElement.on?.('plotly_afterplot', function () {
-      console.log('done plotting');
-    
-      function printSecondAlignedDate() {
-        setInterval(() => {
-                y.value.push(randMinMax(1, 3))
-                x.value.push(x.value[x.value.length-1]+1)
-                // console.log('printSecondAlignedDate',new Date().toISOString(), x, y);
-                // plotlyHTMLElement
-            }, 1000);
-        }     
-        printSecondAlignedDate();
-    });
-
-    plotlyHTMLElement.on?.('plotly_click', function () {
-      alert('You clicked this Plotly chart!');
-
-      // use plotly function via `$plotly` to download chart image
-      $plotly.downloadImage(plotlyHTMLElement as HTMLElement, {
-        format: 'png',
-        width: 800,
-        height: 600,
-        filename: 'newplot',
-      });
-    });
+    console.log(`chart_ready plotlyHTMLElement:${plotlyHTMLElement}, ${new Date().toLocaleString()}`)
+    setInterval(() => {
+      console.log(`setInterval ${new Date().toLocaleString()}`)
+      $plotly.extendTraces(plotlyHTMLElement, {y: [[Math.random()]]}, [0])
+    }, 1000)
   }
 </script>
