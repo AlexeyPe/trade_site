@@ -2,9 +2,9 @@
   <div>
     <client-only>
       <nuxt-plotly
-      :data="сhart.data"
-      :layout="сhart.layout"
-      :config="сhart.config"
+      :data="chart.data"
+      :layout="chart.layout"
+      :config="chart.config"
       style="width: 100%"
       @on-ready="chart_ready"
       ></nuxt-plotly>
@@ -16,24 +16,49 @@
   import type { NuxtPlotlyHTMLElement } from 'nuxt-plotly';
   const { $plotly } = useNuxtApp();
 
-  const сhart = {
+  const chart = {
     data: [
       {
-        y: [1],
-        type: 'line',
+        x:[],
+        y:[],
+        type: 'scatter',
       },
     ],
     config: {scrollZoom: false, displayModeBar: false},
     layout: {
       title: 'realtime line chart',
       dragmode: 'pan',
+      uirevision:'true',
+      transition: {
+        duration: 400
+      },
       yaxis: {
         fixedrange: true,
         autorange: true,
       },
       xaxis: {
         autorange: true,
-        // range: [0, 10]
+        type: 'date',
+        rangeselector: {
+          bgcolor: "rgb(39, 39, 39)",
+          buttons: [
+            {
+              count: 15,
+              step: "second",
+              label: "15s",
+              stepmode: "backward"
+            },
+            {
+              count: 1,
+              step: "minute",
+              label: "1m",
+              stepmode: "backward"
+            },
+            {
+              step: 'all'
+            }
+          ]},
+        rangeslider: {range: []},
       },
       template: {
         "layout": {
@@ -334,9 +359,34 @@
     is_ready = true
 
     console.log(`chart_ready plotlyHTMLElement:${plotlyHTMLElement}, ${new Date().toLocaleString()}`)
+    var x = 0
     setInterval(() => {
       console.log(`setInterval ${new Date().toLocaleString()}`)
-      $plotly.extendTraces(plotlyHTMLElement, {y: [[Math.random()]]}, [0])
+
+      // Без анимации и без багов
+      $plotly.extendTraces(
+        plotlyHTMLElement,
+        {
+          y: [[Math.random()]], 
+          x: [[new Date().toISOString()]]
+        },
+        [0]
+      )
+      // console.log(`x:`,chart.data[0].x,`, y:`,chart.data[0].y)
+
+
+      // Анимация с багами
+      // const last_y = chart.data[0].y[chart.data[0].y.length-1]
+      // const new_y = Math.random()
+      // $plotly.extendTraces(plotlyHTMLElement, {y: [[last_y]]}, [0])
+      
+      // chart.data[0].y[chart.data[0].y.length-1] = new_y
+      
+      // $plotly.animate(
+      //   plotlyHTMLElement,
+      //   { data: chart.data, traces: [0], layout: {}},
+      //   {transition:{ duration: 500, easing: 'cubic-in-out'}, frame: { duration: 500}} 
+      // )
     }, 1000)
   }
 </script>
